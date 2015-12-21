@@ -76,7 +76,7 @@ void init_quad_tree() {
 	quadtree = new Quadtree(Vec2(0, 0), Vec2(1, 1));
 
 	//const int n_quad_points = 1 * 1000 * 1000;
-	const size_t n_quad_points = 1 * 1000 * 100;
+	const size_t n_quad_points = 1 * 1000 * 80;
 	for (size_t i = 0; i < n_quad_points; ++i) {
 		points_2d.push_back(randVec2());
 	}
@@ -96,16 +96,14 @@ void init_particle_tree() {
 
 	quad_particle_tree = new QuadParticleTree(Particle(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0), Particle(1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0));
 	
-	//const int n_quad_points = 1 * 1000 * 1000;
-	const size_t n_particles = 1 * 1000 * 80;
-
-	for (size_t i = 0; i < n_particles; ++i) {
-		points_particle.push_back(Particle(rand11(), rand11(), rand11(), rand11(), rand11(), rand11(), rand11()));
+	for (Vec2 current_vec2 : points_2d) {
+		points_particle.push_back(Particle(current_vec2.x, current_vec2.y, rand11(), rand11(), rand11(), rand11(), rand11()));
 	}
+
 	std::cout << "Created " << points_particle.size() << " 2d particles" << std::endl;
 
-	quad_tree_particles = new TreeParticle[n_particles];
-	for (size_t i = 0; i < n_particles; ++i) {
+	quad_tree_particles = new TreeParticle[points_2d.size()];
+	for (size_t i = 0; i < points_2d.size(); ++i) {
 		quad_tree_particles[i].setPosition(points_particle[i]);
 		quad_particle_tree->insert(quad_tree_particles + i);
 	}
