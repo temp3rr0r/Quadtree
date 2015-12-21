@@ -233,5 +233,11 @@ int main(int argc, char **argv) {
 	testNaive_quad_particles();
 	test_quad_particles_tree();
 
+	// TODO: add routine that finds all the elements of quadtreepoint(s) inside the quadtreeParticles (within a floating
+	// point accuracy range ofcourse).
+
+	// TODO: compare 8tree with 4treepoint and 4treeparticle (on x, y only) for result count and actual x, y
+	// TODO: Figure out were to store the 4treeparticle "x, y, velocities, accelerations" averages
+
 	system("pause");
 }
