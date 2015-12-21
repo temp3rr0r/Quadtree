@@ -25,34 +25,12 @@ struct Vec2 {
 		return D[i];
 	}
 
-	float maxComponent() const {
-		float r = x;
-		if (y > r)
-			r = y;
-		return r;
-	}
-
-	float minComponent() const {
-		float r = x;
-		if (y < r)
-			r = y;
-		return r;
-	}
-
 	Vec2 operator+(const Vec2& r) const {
 		return Vec2(x + r.x, y + r.y);
 	}
 
 	Vec2 operator-(const Vec2& r) const {
 		return Vec2(x - r.x, y - r.y);
-	}
-
-	Vec2 cmul(const Vec2& r) const {
-		return Vec2(x*r.x, y*r.y);
-	}
-
-	Vec2 cdiv(const Vec2& r) const {
-		return Vec2(x / r.x, y / r.y);
 	}
 
 	Vec2 operator*(float r) const {
@@ -100,10 +78,6 @@ struct Vec2 {
 				y * r.x - x * r.y,
 				x * r.y - y * r.x
 			);
-	}
-
-	Vec2 normalized() const {
-		return *this / norm();
 	}
 };
 
