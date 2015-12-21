@@ -28,8 +28,8 @@ Vec2 qmin_2d, qmax_2d;
 
 QuadParticleTree *quad_particle_tree;
 TreeParticle *quad_tree_particles;
-Particle qmin_particle(-0.05, -0.05, 0.0, 0.0, 0.0, 0.0, 0.0);
-Particle qmax_particle(0.05f, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0);
+Particle qmin_particle(-0.05, -0.05, 0.0f, 0.0f, 0.0f, 0.0f, 0.0);
+Particle qmax_particle(0.05f, 0.05, 0.0f, 0.0f, 0.0f, 0.0f, 0.0);
 
 float rand11() // Random number between [-1,1]
 {
@@ -94,10 +94,10 @@ void init_quad_tree() {
 
 void init_particle_tree() {
 
-	quad_particle_tree = new QuadParticleTree(Particle(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), Particle(1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0));
+	quad_particle_tree = new QuadParticleTree(Particle(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0), Particle(1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0));
 	
 	//const int n_quad_points = 1 * 1000 * 1000;
-	const size_t n_particles = 1 * 10;
+	const size_t n_particles = 1 * 1000 * 80;
 
 	for (size_t i = 0; i < n_particles; ++i) {
 		points_particle.push_back(Particle(rand11(), rand11(), rand11(), rand11(), rand11(), rand11(), rand11()));
