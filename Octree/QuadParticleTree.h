@@ -59,40 +59,17 @@ namespace brandonpelfrey {
 
 		void insert(TreeParticle* point) {
 
-			this->total_mass_ += point->get_mass();
 
 			if (isLeafNode()) {
 
-				//float mass = point->get_mass();
-				//float center_y = point->getPosition().x_;
-				//float center_x = point->getPosition().y_;
+				this->total_mass_ += point->get_mass();
+				this->center_of_mass_x_ += point->getPosition().x_;
+				this->center_of_mass_y_ += point->getPosition().y_;
 
 				if (data == nullptr) {
 					data = point;
 
 				} else {
-
-					//float mass = 0.0;
-					//float center_y = point->getPosition().x_;
-					//float center_x = point->getPosition().y_;
-					//uint8_t children_count = 0;
-					//if (children != nullptr) {
-					//	for (uint8_t i = 0; i < NUM_CHILDREN; ++i) {
-					//		if (children[i] != nullptr) {
-					//			if (children[i]->data != nullptr) {
-					//				++children_count;
-					//				mass += children[i]->data->get_mass();
-					//				center_x += children[i]->data->getPosition().x_;
-					//				center_y += children[i]->data->getPosition().y_;
-					//			}
-					//		}
-					//	}
-					//}
-					//if (children_count > 0) {
-					//	this->center_of_mass_x_ = center_x / children_count;
-					//	this->center_of_mass_y_ = center_y / children_count;
-					//	this->total_mass_ += mass;
-					//}
 
 					if (this->depth < MAX_TREE_DEPTH) { // TODO: switch to vector, to be able to add extra children
 						TreeParticle *oldPoint = data;
@@ -111,27 +88,27 @@ namespace brandonpelfrey {
 				}
 			} else {
 
-				//float mass = 0.0;
-				//float center_y = point->getPosition().x_;
-				//float center_x = point->getPosition().y_;
-				//uint8_t children_count = 0;
-				//if (children != nullptr) {
-				//	for (uint8_t i = 0; i < NUM_CHILDREN; ++i) {
-				//		if (children[i] != nullptr) {
-				//			if (children[i]->data != nullptr) {
-				//				++children_count;
-				//				mass += children[i]->data->get_mass();
-				//				center_x += children[i]->data->getPosition().x_;
-				//				center_y += children[i]->data->getPosition().y_;
-				//			}
-				//		}
-				//	}
-				//}
-				//if (children_count > 0) {
-				//	this->center_of_mass_x_ = center_x / children_count;
-				//	this->center_of_mass_y_ = center_y / children_count;
-				//	this->total_mass_ += mass;
-				//}
+				this->total_mass_ += point->get_mass();
+
+				float mass = 0.0;
+				float center_y = 0.0;
+				float center_x = 0.0;
+				uint8_t children_count = 0;
+				if (children != nullptr) {
+					for (uint8_t i = 0; i < NUM_CHILDREN; ++i) {
+						if (children[i] != nullptr) {
+							if (children[i]->data != nullptr) {
+								++children_count;
+								center_x += children[i]->data->getPosition().x_ * children[i]->data->get_mass();
+								center_y += children[i]->data->getPosition().y_ * children[i]->data->get_mass();
+							}
+						}
+					}
+				}
+				if (children_count > 0) {
+					this->center_of_mass_x_ = center_x / this->total_mass_;
+					this->center_of_mass_y_ = center_y / this->total_mass_;
+				}
 
 				int octant = getQuadrantContainingPoint(point->getPosition());
 				
