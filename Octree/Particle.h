@@ -17,6 +17,7 @@ public:
 	inline void add_acceleration_pairwise(Particle& interacting_particle);
 	inline void add_acceleration(const Particle& interacting_particle);
 	inline void advance(double time_stamp);
+	
 	double x_;
 	double y_;
 	double mass_;

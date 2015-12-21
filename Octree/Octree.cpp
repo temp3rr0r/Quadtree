@@ -97,10 +97,10 @@ void init_particle_tree() {
 	quad_particle_tree = new QuadParticleTree(Particle(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), Particle(1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0));
 	
 	//const int n_quad_points = 1 * 1000 * 1000;
-	const size_t n_particles = 1 * 1000 * 100;
+	const size_t n_particles = 1 * 10;
 
 	for (size_t i = 0; i < n_particles; ++i) {
-		points_particle.push_back(Particle(rand11(), rand11(), 0.0, 0.0, 0.0, 0.0, 0.0));
+		points_particle.push_back(Particle(rand11(), rand11(), rand11(), rand11(), rand11(), rand11(), rand11()));
 	}
 	std::cout << "Created " << points_particle.size() << " 2d particles" << std::endl;
 
@@ -224,6 +224,7 @@ void test_quad_particles_tree() {
 int main(int argc, char **argv) {
 	init();
 	init_quad_tree();
+	init_particle_tree();
 
 	testNaive();
 	testOctree();
