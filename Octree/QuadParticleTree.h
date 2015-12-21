@@ -15,15 +15,16 @@ namespace brandonpelfrey {
 		TreeParticle *data;
 		bool hasChildren;
 
-		float center_of_mass_x_;
-		float center_of_mass_y_;
-		float total_mass_;
+		float center_of_mass_x_ = 0.0;
+		float center_of_mass_y_ = 0.0;
+		float total_mass_ = 0.0;
 
 		uint8_t depth = 0;
 
 	public:		
 		QuadParticleTree(const Particle& origin, const Particle& halfDimension)
 			: origin(origin), halfDimension(halfDimension), data(nullptr) {
+
 			for (int i = 0; i < NUM_CHILDREN; ++i)
 				children[i] = nullptr;
 		}
@@ -32,6 +33,10 @@ namespace brandonpelfrey {
 			: origin(copy.origin), halfDimension(copy.halfDimension), data(copy.data) {
 			
 			++depth;
+		}
+
+		float get_total_mass() const {
+			return total_mass_;
 		}
 		
 		~QuadParticleTree() {
@@ -53,13 +58,43 @@ namespace brandonpelfrey {
 		}
 
 		void insert(TreeParticle* point) {
+
+			this->total_mass_ += point->get_mass();
+
 			if (isLeafNode()) {
+
+				//float mass = point->get_mass();
+				//float center_y = point->getPosition().x_;
+				//float center_x = point->getPosition().y_;
+
 				if (data == nullptr) {
 					data = point;
-				}
-				else {
 
-					if (this->depth < MAX_TREE_DEPTH) {
+				} else {
+
+					//float mass = 0.0;
+					//float center_y = point->getPosition().x_;
+					//float center_x = point->getPosition().y_;
+					//uint8_t children_count = 0;
+					//if (children != nullptr) {
+					//	for (uint8_t i = 0; i < NUM_CHILDREN; ++i) {
+					//		if (children[i] != nullptr) {
+					//			if (children[i]->data != nullptr) {
+					//				++children_count;
+					//				mass += children[i]->data->get_mass();
+					//				center_x += children[i]->data->getPosition().x_;
+					//				center_y += children[i]->data->getPosition().y_;
+					//			}
+					//		}
+					//	}
+					//}
+					//if (children_count > 0) {
+					//	this->center_of_mass_x_ = center_x / children_count;
+					//	this->center_of_mass_y_ = center_y / children_count;
+					//	this->total_mass_ += mass;
+					//}
+
+					if (this->depth < MAX_TREE_DEPTH) { // TODO: switch to vector, to be able to add extra children
 						TreeParticle *oldPoint = data;
 						data = nullptr;
 
@@ -68,43 +103,38 @@ namespace brandonpelfrey {
 							newOrigin.x_ += halfDimension.x_ * (i & 2 ? .5f : -.5f);
 							newOrigin.y_ += halfDimension.y_ * (i & 1 ? .5f : -.5f);
 							children[i] = new QuadParticleTree(newOrigin, halfDimension *.5f);
-							children[i]->depth = this->depth + 1; // increase the depth on children
 						}
-
+						
 						children[getQuadrantContainingPoint(oldPoint->getPosition())]->insert(oldPoint);
 						children[getQuadrantContainingPoint(point->getPosition())]->insert(point);
 					}
 				}
-			}
-			else {
+			} else {
+
+				//float mass = 0.0;
+				//float center_y = point->getPosition().x_;
+				//float center_x = point->getPosition().y_;
+				//uint8_t children_count = 0;
+				//if (children != nullptr) {
+				//	for (uint8_t i = 0; i < NUM_CHILDREN; ++i) {
+				//		if (children[i] != nullptr) {
+				//			if (children[i]->data != nullptr) {
+				//				++children_count;
+				//				mass += children[i]->data->get_mass();
+				//				center_x += children[i]->data->getPosition().x_;
+				//				center_y += children[i]->data->getPosition().y_;
+				//			}
+				//		}
+				//	}
+				//}
+				//if (children_count > 0) {
+				//	this->center_of_mass_x_ = center_x / children_count;
+				//	this->center_of_mass_y_ = center_y / children_count;
+				//	this->total_mass_ += mass;
+				//}
+
 				int octant = getQuadrantContainingPoint(point->getPosition());
-
-				// Calculate total mass
-				if (octant < NUM_CHILDREN) {
-					float mass = 0.0f;
-					float center_y = 0.0f;
-					float center_x = 0.0f;
-
-					uint8_t children_count = 0;
-					for (uint8_t i = 0; i < NUM_CHILDREN; ++i) {
-						if (children[i]->data != nullptr) {
-							++children_count;
-							mass += children[i]->data->get_mass();
-							center_x += children[i]->data->getPosition().x_;
-							center_y += children[i]->data->getPosition().y_;
-						}
-					}
-					if (children_count > 0) {
-						this->center_of_mass_x_ = center_x / children_count;
-						this->center_of_mass_y_ = center_y / children_count;
-						this->total_mass_ += mass;
-					}
-
-					
-				}
-
-				// Calculate Center Of mass
-
+				
 				children[octant]->insert(point);
 			}
 		}

@@ -76,7 +76,9 @@ void init_quad_tree() {
 	quadtree = new Quadtree(Vec2(0, 0), Vec2(1, 1));
 
 	//const int n_quad_points = 1 * 1000 * 1000;
-	const size_t n_quad_points = 1 * 1000 * 80;
+	//const size_t n_quad_points = 1 * 1000 * 80;
+	const size_t n_quad_points = 30;
+
 	for (size_t i = 0; i < n_quad_points; ++i) {
 		points_2d.push_back(randVec2());
 	}
@@ -97,7 +99,7 @@ void init_particle_tree() {
 	quad_particle_tree = new QuadParticleTree(Particle(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0), Particle(1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0));
 	
 	for (Vec2 current_vec2 : points_2d) {
-		points_particle.push_back(Particle(current_vec2.x, current_vec2.y, rand11(), rand11(), rand11(), rand11(), rand11()));
+		points_particle.push_back(Particle(current_vec2.x, current_vec2.y, rand11(), rand11(), 1.0f, rand11(), rand11()));
 	}
 
 	std::cout << "Created " << points_particle.size() << " 2d particles" << std::endl;
@@ -184,6 +186,14 @@ void testNaive_quad_particles() {
 
 	double T = stopwatch() - start;
 	std::cout << "testNaive_quad_particles 2D found " << results_particles.size() << " particles in " << T << " sec." << std::endl;
+
+	float total_particle_mass = 0.0f;
+	for (size_t i = 0; i < points_particle.size(); ++i) {
+		total_particle_mass += points_particle[i].mass_;
+		
+	}
+
+	std::cout << "Total mass testNaive_quad_particles: " << total_particle_mass << std::endl;
 }
 
 // Query using Octree
@@ -216,6 +226,14 @@ void test_quad_particles_tree() {
 
 	double T = stopwatch() - start;
 	std::cout << "results_quad_particle_tree 2D found " << results_quad_particle_tree.size() << " particles in " << T << " sec." << std::endl;
+
+	float total_particle_mass = 0.0f;
+	for (size_t i = 0; i < results_quad_particle_tree.size(); ++i) {
+		total_particle_mass += results_quad_particle_tree[i]->get_mass();
+
+	}
+
+	std::cout << "Total mass testNaive_quad_particles: " << quad_particle_tree->get_total_mass() << " particles in " << T << " sec." << std::endl;
 }
 
 
