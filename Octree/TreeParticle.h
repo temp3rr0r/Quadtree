@@ -10,7 +10,12 @@ public:
 	const Particle& getPosition() const {
 		return particle;
 	}
+
 	void setPosition(const Particle& input_particle) {
 		particle = input_particle;
+	}
+	
+	float get_mass() {
+		return particle.mass_;
 	}
 };

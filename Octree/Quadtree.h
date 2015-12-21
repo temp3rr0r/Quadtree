@@ -21,8 +21,7 @@ namespace brandonpelfrey {
 		}
 
 		Quadtree(const Quadtree& copy)
-			: origin(copy.origin), halfDimension(copy.halfDimension), data(copy.data) {
-
+			: origin(copy.origin), halfDimension(copy.halfDimension), data(copy.data) {			
 		}
 		
 		~Quadtree() {
