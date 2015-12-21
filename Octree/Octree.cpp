@@ -7,12 +7,15 @@
 #include "Vec2.h"
 #include "Quadtree.h"
 #include <iostream>
+#include "Particle.h"
+#include "treeParticle.h"
 
 using namespace brandonpelfrey;
 
 // Used for testing
 std::vector<Vec3> points;
 std::vector<Vec2> points_2d;
+std::vector<Particle> points_particle;
 
 Octree *octree;
 OctreePoint *octreePoints;
@@ -21,6 +24,11 @@ Vec3 qmin, qmax;
 Quadtree *quadtree;
 QuadtreePoint *quad_tree_points;
 Vec2 qmin_2d, qmax_2d;
+
+Quadtree *quadtree_particles;
+TreeParticle *quad_tree_particles;
+Particle qmin_particle(-0.05, -0.05, 0.0, 0.0, 0.0, 0.0, 0.0);
+Particle qmax_particle(0.05f, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0);
 
 float rand11() // Random number between [-1,1]
 {
@@ -59,7 +67,7 @@ void init_quad_tree() {
 	quadtree = new Quadtree(Vec2(0, 0), Vec2(1, 1));
 
 	//const int n_quad_points = 1 * 1000 * 1000;
-	const size_t n_quad_points = 1 * 1000 * 10;
+	const size_t n_quad_points = 1 * 1000 * 100;
 	for (size_t i = 0; i < n_quad_points; ++i) {
 		points_2d.push_back(randVec2());
 	}
@@ -75,6 +83,26 @@ void init_quad_tree() {
 	qmax_2d = Vec2(0.05f, 0.05f);
 }
 
+void init_particle_tree() {
+
+	quadtree = new Quadtree(Vec2(0, 0), Vec2(1, 1));
+
+	//const int n_quad_points = 1 * 1000 * 1000;
+	const size_t n_quad_points = 1 * 1000 * 100;
+	for (size_t i = 0; i < n_quad_points; ++i) {
+		points_2d.push_back(randVec2());
+	}
+	std::cout << "Created " << points_2d.size() << " 2d points" << std::endl;
+
+	quad_tree_points = new QuadtreePoint[n_quad_points];
+	for (size_t i = 0; i < n_quad_points; ++i) {
+		quad_tree_points[i].setPosition(points_2d[i]);
+		quadtree->insert(quad_tree_points + i);
+	}
+	std::cout << "Inserted points to quadtree" << std::endl;
+	qmin_2d = Vec2(-0.05f, -0.05f);
+	qmax_2d = Vec2(0.05f, 0.05f);
+}
 
 void init() {
 	// Create a new Octree centered at the origin
