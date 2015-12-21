@@ -24,15 +24,12 @@ namespace brandonpelfrey {
 	public:		
 		QuadParticleTree(const Particle& origin, const Particle& halfDimension)
 			: origin(origin), halfDimension(halfDimension), data(nullptr) {
-
 			for (int i = 0; i < NUM_CHILDREN; ++i)
 				children[i] = nullptr;
 		}
 
 		QuadParticleTree(const QuadParticleTree& copy)
 			: origin(copy.origin), halfDimension(copy.halfDimension), data(copy.data) {
-			
-			++depth;
 		}
 
 		float get_total_mass() const {
@@ -59,16 +56,13 @@ namespace brandonpelfrey {
 
 		void insert(TreeParticle* point) {
 
-
 			if (isLeafNode()) {
-
 				this->total_mass_ += point->get_mass();
 				this->center_of_mass_x_ += point->getPosition().x_;
 				this->center_of_mass_y_ += point->getPosition().y_;
 
 				if (data == nullptr) {
 					data = point;
-
 				} else {
 
 					if (this->depth < MAX_TREE_DEPTH) { // TODO: switch to vector, to be able to add extra children
@@ -80,6 +74,7 @@ namespace brandonpelfrey {
 							newOrigin.x_ += halfDimension.x_ * (i & 2 ? .5f : -.5f);
 							newOrigin.y_ += halfDimension.y_ * (i & 1 ? .5f : -.5f);
 							children[i] = new QuadParticleTree(newOrigin, halfDimension *.5f);
+							children[i]->depth = depth + 1;
 						}
 						
 						children[getQuadrantContainingPoint(oldPoint->getPosition())]->insert(oldPoint);
