@@ -5,6 +5,7 @@
 class TreeParticle {
 	Particle particle;
 public:
+	TreeParticle() { }
 	TreeParticle(const Particle& input_particle) : particle(input_particle) { }
 	const Particle& getPosition() const {
 		return particle;

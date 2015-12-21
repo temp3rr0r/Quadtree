@@ -9,6 +9,7 @@
 #include <iostream>
 #include "Particle.h"
 #include "treeParticle.h"
+#include "QuadParticleTree.h"
 
 using namespace brandonpelfrey;
 
@@ -25,7 +26,7 @@ Quadtree *quadtree;
 QuadtreePoint *quad_tree_points;
 Vec2 qmin_2d, qmax_2d;
 
-Quadtree *quadtree_particles;
+QuadParticleTree *quad_particle_tree;
 TreeParticle *quad_tree_particles;
 Particle qmin_particle(-0.05, -0.05, 0.0, 0.0, 0.0, 0.0, 0.0);
 Particle qmax_particle(0.05f, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -63,6 +64,14 @@ bool naivePointInBox_quad(const Vec2& point, const Vec2& bmin, const Vec2& bmax)
 		point.y <= bmax.y;
 }
 
+bool naivePointInBox_quad_particle(const Particle& point, const Particle& bmin, const Particle& bmax) {
+	return
+		point.x_ >= bmin.x_ &&
+		point.y_ >= bmin.y_ &&
+		point.x_ <= bmax.x_ &&
+		point.y_ <= bmax.y_;
+}
+
 void init_quad_tree() {
 	quadtree = new Quadtree(Vec2(0, 0), Vec2(1, 1));
 
@@ -85,23 +94,22 @@ void init_quad_tree() {
 
 void init_particle_tree() {
 
-	quadtree = new Quadtree(Vec2(0, 0), Vec2(1, 1));
-
+	quad_particle_tree = new QuadParticleTree(Particle(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0), Particle(1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0));
+	
 	//const int n_quad_points = 1 * 1000 * 1000;
-	const size_t n_quad_points = 1 * 1000 * 100;
-	for (size_t i = 0; i < n_quad_points; ++i) {
-		points_2d.push_back(randVec2());
-	}
-	std::cout << "Created " << points_2d.size() << " 2d points" << std::endl;
+	const size_t n_particles = 1 * 1000 * 100;
 
-	quad_tree_points = new QuadtreePoint[n_quad_points];
-	for (size_t i = 0; i < n_quad_points; ++i) {
-		quad_tree_points[i].setPosition(points_2d[i]);
-		quadtree->insert(quad_tree_points + i);
+	for (size_t i = 0; i < n_particles; ++i) {
+		points_particle.push_back(Particle(rand11(), rand11(), 0.0, 0.0, 0.0, 0.0, 0.0));
 	}
-	std::cout << "Inserted points to quadtree" << std::endl;
-	qmin_2d = Vec2(-0.05f, -0.05f);
-	qmax_2d = Vec2(0.05f, 0.05f);
+	std::cout << "Created " << points_particle.size() << " 2d particles" << std::endl;
+
+	quad_tree_particles = new TreeParticle[n_particles];
+	for (size_t i = 0; i < n_particles; ++i) {
+		quad_tree_particles[i].setPosition(points_particle[i]);
+		quad_particle_tree->insert(quad_tree_particles + i);
+	}
+	std::cout << "Inserted points to quad particle tree" << std::endl;
 }
 
 void init() {
@@ -166,6 +174,20 @@ void testNaive_quad() {
 	std::cout << "testNaive 2D found " << results_2d.size() << " points in " << T << " sec." << std::endl;
 }
 
+void testNaive_quad_particles() {
+	double start = stopwatch();
+
+	std::vector<size_t> results_particles;
+	for (size_t i = 0; i < points_particle.size(); ++i) {
+		if (naivePointInBox_quad_particle(points_particle[i], qmin_particle, qmax_particle)) {
+			results_particles.push_back(i);
+		}
+	}
+
+	double T = stopwatch() - start;
+	std::cout << "testNaive_quad_particles 2D found " << results_particles.size() << " particles in " << T << " sec." << std::endl;
+}
+
 // Query using Octree
 void testOctree() {
 	double start = stopwatch();
@@ -188,6 +210,16 @@ void test_quad_tree() {
 	std::cout << "test_quad_tree 2D found " << results_quadtree.size() << " points in " << T << " sec." << std::endl;
 }
 
+void test_quad_particles_tree() {
+	double start = stopwatch();
+
+	std::vector<TreeParticle*> results_quad_particle_tree;
+	quad_particle_tree->getPointsInsideBox(qmin_particle, qmax_particle, results_quad_particle_tree);
+
+	double T = stopwatch() - start;
+	std::cout << "results_quad_particle_tree 2D found " << results_quad_particle_tree.size() << " particles in " << T << " sec." << std::endl;
+}
+
 
 int main(int argc, char **argv) {
 	init();
@@ -198,6 +230,9 @@ int main(int argc, char **argv) {
 
 	testNaive_quad();
 	test_quad_tree();
+
+	testNaive_quad_particles();
+	test_quad_particles_tree();
 
 	system("pause");
 }
