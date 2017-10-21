@@ -1,8 +1,5 @@
-SimpleOctree
+2D Gravity Particle simulator using Quadtrees
 ============
 
-A simple octree with good commenting for learning how octrees work. Blog post incoming with description, or read comments in Octree.h
-
-Usage
-============
-make && ./octree
+Can simulate up to 50.000 particles.
+Can generate PNG output of the simulator
